@@ -1,3 +1,12 @@
+<# User Transfer Script
+Original purpose to help out friend with transfers of computer not using USMT.
+
+Author: Mark Gevaert
+Date: 12/10/2019
+#>
+
+
+<# Global Variables#>
 $destination = "\\COMPUTER\C$"
 $RoboLog = "C:\robolog.txt"
 $UNCItem = ""
@@ -6,7 +15,6 @@ $userSpecial = "AppData\Local\Mozilla",
 "AppData\Local\Google",
 "AppData\Roaming\Mozilla"
 
-###############################################################################################################
 
 <# FUNCTIONS #>
 
@@ -69,25 +77,38 @@ else {
     Write-Host "No Users Found"
     Exit
 }
+#Get Folders to select
 $folders = Get-ChildItem "C:\Users\$target"
+#Throw at user to select
 $transfer = Show-List $folders.Name "folder(s)"
+#Add additional Default Folders
 $transfer = $userSpecial + $transfer
+
+#Create List of Folders
 $list = $null
 Foreach ($object in $transfer){
-    $list += "C:\Users\$target\$object"
+    $fpath = "C:\Users\$target\$object"
+    if (Test-Path -path $fpath){
+        $list += $fpath
+    } 
+    
 }
 $list = $list + $UNCFolder
 
+#Grab number of folders
 $num = $list.count
+
 foreach ($item in $list){
+    #Copy folders in seperate job windows (Unsure if you can write to same log path)
     robocopy $item $destination /MIR /SEC /TEE /R:2 /LOG:$RoboLog -AsJob
 }
+#Loop to determine how many jobs are left to transfer
 While ($state){
     Remove-Job -State Finished
     $jobs = Get-Job
     If ($null -eq $jobs){
         $state = $false
     }
-    Clear-Host
-    Write-Host "Number of Jobs to complete: $jobs.count"\
+    $time = Get-Date -UFormat "%m/%d/%Y %R"
+    Write-Host "$time: Number of Jobs to complete: $jobs.count of $num"\
 }
