@@ -11,6 +11,9 @@ $destination = "\\COMPUTER\C$"
 $RoboLog = "C:\robolog.txt"
 $UNCItem = ""
 $UNCFolder = ""
+
+<#Add Defaults that are normally requested here that
+are in folders not to be fully copied (like AppData)#>
 $userSpecial = "AppData\Local\Mozilla",
 "AppData\Local\Google",
 "AppData\Roaming\Mozilla"
@@ -96,12 +99,16 @@ Foreach ($object in $transfer){
 $list = $list + $UNCFolder
 
 #Grab number of folders
-$num = $list.count
+$num = $list.count + $UNCFile.Count
 
 foreach ($item in $list){
     #Copy folders in seperate job windows (Unsure if you can write to same log path)
     robocopy $item $destination /MIR /SEC /TEE /R:2 /LOG:$RoboLog -AsJob
 }
+foreach ($file in $UNCFile){
+    robocopy $item $destination /MIR /SEC /TEE /R:2 /LOG:$RoboLog -AsJob
+}
+
 #Loop to determine how many jobs are left to transfer
 While ($state){
     Remove-Job -State Finished
@@ -112,3 +119,5 @@ While ($state){
     $time = Get-Date -UFormat "%m/%d/%Y %R"
     Write-Host "$time: Number of Jobs to complete: $jobs.count of $num"\
 }
+
+Write-Host "`n`nTransfer Completed."
