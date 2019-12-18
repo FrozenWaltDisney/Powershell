@@ -32,7 +32,7 @@ function Repair-PublicFolder {
                     "`n$time : [ORIGIN][IDENTITY]$fixidentity [NAME]$name" | Out-File -FilePath $logfile -append
                     "`n$time : [CHANGE]$change`n"| Out-File -FilePath $logfile -append
 
-                    #Change Folder (Please test run by commenting this out first!)
+                    #Change Folder (Please test first!)
 #                    Set-PublicFolder -Identity $fixidentity -Name $gname
                     
                     #Return to continue
