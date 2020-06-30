@@ -22,6 +22,7 @@ $deltime = (Get-Date).Adddays(-($disabledtime))
 
 #Moves workstations to disabled depending on checkin time
 function Update-DisabledCPU(){ 
+    #Change OU for search parameters if needed
     $oldcomputers = Get-ADComputer -Filter {LastLogonTimeStamp -lt $time} `
     -searchbase "OU=Workstations,DC=$domain,DC=com" `
     -Properties LastLogonTimeStamp | where-object name -like "*" | `
