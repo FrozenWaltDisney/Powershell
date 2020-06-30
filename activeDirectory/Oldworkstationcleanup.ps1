@@ -21,8 +21,7 @@ $deltime = (Get-Date).Adddays(-($disabledtime))
 
 
 #Moves workstations to disabled depending on checkin time
-function Update-DisabledCPU(){
-    [string]$moveddisabled = "`n" + "Computers that have been moved to disabled" + "`n"
+function Update-DisabledCPU(){ 
     $oldcomputers = Get-ADComputer -Filter {LastLogonTimeStamp -lt $time} `
     -searchbase "OU=Workstations,DC=$domain,DC=com" `
     -Properties LastLogonTimeStamp | where-object name -like "*" | `
@@ -34,14 +33,14 @@ function Update-DisabledCPU(){
         $moveddisabled = $moveddisabled + "`n" + $comp
         Move-ADObject $comp -TargetPath $target.DistinguishedName
     }
+    [string]$moveddisabled = "`n" + "Computers that have been moved to disabled" + "`n"
     return $moveddisabled
 }
 
 
 #deletes computers from Disabled Computers based on time
 function Remove-DisabledCPU(){
-    [hashtable]$return = @{}
-    [string]$deleted = "`n" + "Computers that have been deleted" + "`n"
+    [hashtable]$return = @{} 
     [string]$notdeleteddisabled = "`n" + "Computers that are disabled but not deleted" + "`n"
     $disabledcomputers = Get-ADComputer -Filter {LastLogonTimeStamp -lt $time} `
     -searchbase "OU=Disabled Computers,DC=$domain,DC=com" `
@@ -59,6 +58,7 @@ function Remove-DisabledCPU(){
             $oldcomp.Name
             }
     }
+    [string]$deleted = "`n" + "Computers that have been deleted" + "`n"
     $Return.notdeleteddisabled = $notdeleteddisabled
     $Return.deleted = $deleted
     return $Return
