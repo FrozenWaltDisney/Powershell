@@ -26,6 +26,7 @@ function Update-DisabledCPU(){
     -searchbase "OU=Workstations,DC=$domain,DC=com" `
     -Properties LastLogonTimeStamp | where-object name -like "*" | `
     select-object Name,@{Name="Stamp"; Expression={[DateTime]::FromFileTime($_.lastLogonTimestamp)}}
+    #Disabled Computers needs to exist
     $target = Get-ADOrganizationalUnit -LDAPFilter "(name=Disabled Computers)"
     foreach ($item in $oldcomputers){
         $comp = Get-ADComputer -identity $item.name
@@ -66,5 +67,5 @@ function Remove-DisabledCPU(){
 
 
 <#####  Work Area  #####>
-Update-DisabledCPU
-Remove-DisabledCPU
+Update-DisabledCPU #-Whatif
+Remove-DisabledCPU #-Whatif
