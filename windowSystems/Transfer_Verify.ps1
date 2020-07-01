@@ -29,8 +29,6 @@ Function Select-FolderDialog ()
     }
 
 Function Find-CommonPath ($oldPath, $newPath) {
-    #Rest Counter
-    $count = 0
     #Clip first 2 characters (drive letter or network path)
     $oldPathClip = $oldPath.SubString(2)
     $newPathClip = $newPath.SubString(2)
@@ -41,10 +39,16 @@ Function Find-CommonPath ($oldPath, $newPath) {
     Foreach ($oFolder in $oldResult){
         Foreach ($nFolder in $newResult){
             if ($nFolder -eq $oFolder){
-                if ($count -eq 0){
-                    $oldIndex = $oldpath.Indexof($ofolder) - ($ofolder | Measure-Object -Character | Foreach { $_.Characters})
-                    $newIndex = $newPath.Indexof($nfolder) - ($nfolder | Measure-Object -Character | Foreach { $_.Characters})
-                    $count++
+                $counter = 0
+                foreach ($found in $foundlist) {
+                    $ncompare = $newPath.SubString($newIndex,$counter) | Measure-Object -Character | Foreach { $_.Characters}
+                    $ocompare = $oldPath.SubString($oldIndex,$counter) | Measure-Object -Character | Foreach { $_.Characters}
+                    $foundlist = $nFolder
+                    $counter++
+                    if ($ncompare -eq $ocompare){
+                        $oldIndex = $oldpath.Indexof($ofolder) - ($ofolder | Measure-Object -Character | Foreach { $_.Characters})
+                        $newIndex = $newPath.Indexof($nfolder) - ($nfolder | Measure-Object -Character | Foreach { $_.Characters})
+                    }
                 }
             }
         }
