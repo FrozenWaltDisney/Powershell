@@ -39,7 +39,7 @@ Function Find-CommonPath ($oldPath, $newPath) {
     Foreach ($oFolder in $oldResult){
         Foreach ($nFolder in $newResult){
             if ($nFolder -eq $oFolder){
-                $counter = 0
+                $counter = 1
                 foreach ($found in $foundlist) {
                     $ncompare = $newPath.SubString($newIndex,$counter) | Measure-Object -Character | Foreach { $_.Characters}
                     $ocompare = $oldPath.SubString($oldIndex,$counter) | Measure-Object -Character | Foreach { $_.Characters}
