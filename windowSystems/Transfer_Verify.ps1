@@ -28,10 +28,10 @@ Function Select-FolderDialog ()
         }
     }
 
-Function Find-CommonPath ($oldPath, $newPath) {
+Function Find-CommonPath () {
     #Clip first 2 characters (drive letter or network path)
-    $oldPathClip = $oldPath.SubString(2)
-    $newPathClip = $newPath.SubString(2)
+    $oldPathClip = $opath.SubString(2)
+    $newPathClip = $npath.SubString(2)
     #Divide into array for comparison
     $oldResult = $oldPathClip.Split("\")
     $newResult = $newPathClip.Split("\")
@@ -39,27 +39,22 @@ Function Find-CommonPath ($oldPath, $newPath) {
     Foreach ($oFolder in $oldResult){
         Foreach ($nFolder in $newResult){
             if ($nFolder -eq $oFolder){
-                $counter = 1
-                foreach ($found in $foundlist) {
-                    $ncompare = $newPath.SubString($newIndex,$counter) | Measure-Object -Character | Foreach { $_.Characters}
-                    $ocompare = $oldPath.SubString($oldIndex,$counter) | Measure-Object -Character | Foreach { $_.Characters}
-                    $foundlist = $nFolder
-                    $counter++
-                    if ($ncompare -eq $ocompare){
-                        $oldIndex = $oldpath.Indexof($ofolder) - ($ofolder | Measure-Object -Character | Foreach { $_.Characters})
-                        $newIndex = $newPath.Indexof($nfolder) - ($nfolder | Measure-Object -Character | Foreach { $_.Characters})
-                    }
+                $oIndex = $opath.Indexof($ofolder)
+                $nIndex = $npath.Indexof($nfolder)
+                $ncompare = $npath.SubString($nIndex) | Measure-Object -Character | Foreach { $_.Characters}
+                $ocompare = $opath.SubString($oIndex) | Measure-Object -Character | Foreach { $_.Characters}
+                if ($ncompare -eq $ocompare){
+                    $oldIndex = $opath.Indexof($ofolder)
+                    $newIndex = $npath.Indexof($nfolder)
+                    
                 }
             }
         }
     }
-    #Add back clip
-    $oldIndex += 2
-    $newIndex += 2
+
     #report position
-    $oldPosition = $oldPath.SubString(0,$oldIndex) | Measure-Object -Character | Foreach { $_.Characters}
-    $newPosition = $newPath.SubString(0,$newIndex) | Measure-Object -Character | Foreach { $_.Characters}
-    
+    $oldPosition = $opath.SubString(0,$oldIndex) | Measure-Object -Character | Foreach { $_.Characters}
+    $newPosition = $npath.SubString(0,$newIndex) | Measure-Object -Character | Foreach { $_.Characters}
     Return $oldPosition, $newPosition
 }
 
