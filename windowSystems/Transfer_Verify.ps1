@@ -67,7 +67,7 @@ Function Compare-Path () {
 
     $oldpath = Get-ChildItem $opath -Recurse -force
     $newpath = Get-ChildItem $npath -Recurse -force
-    $stringMod = Find-CommonPath($oldpath, $newpath)
+    $stringMod = Find-CommonPath($opath, $npath)
     $oldStrNum = $stringMod[0]
     $newStrNum = $stringMod[1]
 
