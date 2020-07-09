@@ -60,7 +60,7 @@ Function Find-CommonPath ($oldPath, $newPath) {
     $oldPosition = $oldPath.SubString(0,$oldIndex) | Measure-Object -Character | Foreach { $_.Characters}
     $newPosition = $newPath.SubString(0,$newIndex) | Measure-Object -Character | Foreach { $_.Characters}
     
-    Return $oldPostion, $newPosition
+    Return $oldPosition, $newPosition
 }
 
 Function Compare-Path () {
